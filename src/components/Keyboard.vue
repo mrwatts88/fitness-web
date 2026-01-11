@@ -1,0 +1,145 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import type { Mode } from '@/types'
+
+interface Props {
+  mode: Mode
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<{
+  submit: [value: number]
+}>()
+
+const currentInput = ref('')
+
+const displayValue = computed(() => {
+  if (props.mode === 'weight' && currentInput.value.length > 0) {
+    // For weight, auto-insert decimal before last digit
+    // e.g., "1450" displays as "145.0"
+    const digits = currentInput.value
+    if (digits.length === 1) {
+      return `0.${digits}`
+    }
+    return `${digits.slice(0, -1)}.${digits.slice(-1)}`
+  }
+  return currentInput.value || '0'
+})
+
+function handleNumberClick(num: number) {
+  // Limit input length
+  if (currentInput.value.length < 6) {
+    currentInput.value += num.toString()
+  }
+}
+
+function handleClear() {
+  currentInput.value = ''
+}
+
+function handleSubmit() {
+  if (currentInput.value.length === 0) return
+
+  let value: number
+  if (props.mode === 'weight') {
+    // Convert display value to actual float
+    // "145.0" → 145.0
+    value = parseFloat(displayValue.value)
+  } else {
+    value = parseInt(currentInput.value, 10)
+  }
+
+  emit('submit', value)
+  currentInput.value = ''
+}
+
+const primaryColor = computed(() => {
+  return props.mode === 'calorie' ? 'var(--color-calorie-primary)' : 'var(--color-weight-primary)'
+})
+</script>
+
+<template>
+  <div class="keyboard">
+    <div class="input-display">{{ displayValue }}</div>
+    <div class="keyboard-grid">
+      <button
+        v-for="num in [1, 2, 3, 4, 5, 6, 7, 8, 9]"
+        :key="num"
+        class="key-button"
+        @click="handleNumberClick(num)"
+      >
+        {{ num }}
+      </button>
+      <button class="key-button key-clear" @click="handleClear">C</button>
+      <button class="key-button" @click="handleNumberClick(0)">0</button>
+      <button class="key-button key-submit" :style="{ background: primaryColor }" @click="handleSubmit">
+        ✓
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.keyboard {
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  background: var(--color-surface);
+}
+
+.input-display {
+  font-size: 40px;
+  font-weight: 700;
+  text-align: right;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  background: var(--color-background);
+  border-radius: var(--border-radius);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--color-text);
+}
+
+.keyboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.key-button {
+  aspect-ratio: 1.4 / 1;
+  min-height: 44px;
+  font-size: 22px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+}
+
+.key-button:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.key-clear {
+  background: #ef4444;
+  color: white;
+}
+
+.key-clear:active {
+  background: #dc2626;
+}
+
+.key-submit {
+  color: white;
+}
+
+.key-submit:active {
+  opacity: 0.8;
+}
+</style>
