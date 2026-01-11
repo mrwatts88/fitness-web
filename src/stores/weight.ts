@@ -9,7 +9,7 @@ export const useWeightStore = defineStore('weight', () => {
 
   const todayWeight = computed(() => {
     const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-    return entries.value.find((entry) => entry.created_at === today) || null
+    return entries.value.find((entry) => entry.createdAt === today) || null
   })
 
   async function fetchEntries() {

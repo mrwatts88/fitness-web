@@ -18,12 +18,12 @@ async function handleDelete(date: string) {
   <div class="entry-list">
     <div v-if="weightStore.entries.length === 0" class="empty-state">No weight entries</div>
     <div v-else class="entries">
-      <div v-for="entry in weightStore.entries" :key="entry.created_at" class="entry-item">
+      <div v-for="entry in weightStore.entries" :key="entry.createdAt" class="entry-item">
         <div class="entry-info">
-          <div class="entry-date">{{ formatDate(entry.created_at) }}</div>
+          <div class="entry-date">{{ formatDate(entry.createdAt) }}</div>
           <div class="entry-amount">{{ entry.amount.toFixed(1) }} lbs</div>
         </div>
-        <button class="delete-button" @click="handleDelete(entry.created_at)">
+        <button class="delete-button" @click="handleDelete(entry.createdAt)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path
               stroke-linecap="round"

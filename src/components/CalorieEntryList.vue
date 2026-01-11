@@ -6,7 +6,7 @@ const calorieStore = useCalorieStore()
 
 const sortedEntries = computed(() => {
   return [...calorieStore.entries].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
 })
 
@@ -27,7 +27,7 @@ async function handleDelete(id: number) {
     <div v-else class="entries">
       <div v-for="entry in sortedEntries" :key="entry.id" class="entry-item">
         <div class="entry-info">
-          <div class="entry-time">{{ formatTime(entry.created_at) }}</div>
+          <div class="entry-time">{{ formatTime(entry.createdAt) }}</div>
           <div class="entry-amount">{{ entry.amount }} cal</div>
         </div>
         <button class="delete-button" @click="handleDelete(entry.id)">
