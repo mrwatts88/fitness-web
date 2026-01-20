@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import type { Mode } from '@/types'
 
 interface Props {
@@ -28,14 +28,18 @@ const displayValue = computed(() => {
 })
 
 function handleNumberClick(num: number) {
-  // Limit input length
-  if (currentInput.value.length < 6) {
+  if (currentInput.value === "0") {
+    currentInput.value = num.toString();
+  } else if (currentInput.value.length < 4) {
+    // Limit input length
     currentInput.value += num.toString()
   }
 }
 
-function handleClear() {
-  currentInput.value = ''
+function handleBackspace() {
+  const chars = currentInput.value.split("");
+  chars.pop();
+  currentInput.value = chars.join("");
 }
 
 function handleSubmit() {
@@ -57,21 +61,32 @@ function handleSubmit() {
 const primaryColor = computed(() => {
   return props.mode === 'calorie' ? 'var(--color-calorie-primary)' : 'var(--color-weight-primary)'
 })
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
+
+function handleKeyDown(event: KeyboardEvent) {
+  if (event.key in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]) {
+    handleNumberClick(Number.parseInt(event.key));
+  } else if (event.key === "Backspace") {
+    handleBackspace();
+  }
+}
 </script>
 
 <template>
   <div class="keyboard">
     <div class="input-display">{{ displayValue }}</div>
     <div class="keyboard-grid">
-      <button
-        v-for="num in [1, 2, 3, 4, 5, 6, 7, 8, 9]"
-        :key="num"
-        class="key-button"
-        @click="handleNumberClick(num)"
-      >
+      <button v-for="num in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="num" class="key-button" @click="handleNumberClick(num)">
         {{ num }}
       </button>
-      <button class="key-button key-clear" @click="handleClear">C</button>
+      <button class="key-button key-clear" @click="handleBackspace">←</button>
       <button class="key-button" @click="handleNumberClick(0)">0</button>
       <button class="key-button key-submit" :style="{ background: primaryColor }" @click="handleSubmit">
         ✓
@@ -108,8 +123,7 @@ const primaryColor = computed(() => {
 }
 
 .key-button {
-  aspect-ratio: 1.4 / 1;
-  min-height: 44px;
+  min-height: 50px;
   font-size: 22px;
   font-weight: 600;
   border: none;

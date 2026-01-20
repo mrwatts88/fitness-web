@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useWeightStore } from '@/stores/weight'
+import { useCalorieStore } from '@/stores/calorie'
 import { useAppStore } from '@/stores/app'
 
 const weightStore = useWeightStore()
+const calorieStore = useCalorieStore()
 const appStore = useAppStore()
 
 const displayValue = computed(() => {
@@ -18,19 +20,18 @@ const displayValue = computed(() => {
   <div class="weight-display">
     <div class="display-content">
       <div class="label">Today's Weight</div>
-      <div class="value">{{ displayValue }}</div>
-      <div v-if="displayValue !== '-'" class="unit">lbs</div>
     </div>
-    <button class="history-button" @click="appStore.openDrawer">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-      </svg>
-    </button>
+    <div :style="{display: 'flex', gap: '10px' }">
+      <div class="value">{{ displayValue }}</div>
+      <button class="history-button" @click="appStore.openDrawer">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.5v5l4 1M4.252 5v4H8M5.07 8a8 8 0 1 1-.818 6"/>
+        </svg>
+      </button>
+    </div>
+    <div :style="{height: '40px'}" />
+    <div class="label">Loss in 2 weeks</div>
+    <div class="value">{{ calorieStore.lossIn2Weeks.toFixed(1)}}</div>
   </div>
 </template>
 
@@ -42,7 +43,6 @@ const displayValue = computed(() => {
   align-items: center;
   justify-content: center;
   padding: var(--spacing-md);
-  gap: var(--spacing-md);
   min-height: 0;
 }
 
@@ -82,9 +82,9 @@ const displayValue = computed(() => {
 }
 
 .history-button {
-  padding: 12px 24px;
+  padding: 12px 12px;
   background: var(--color-surface);
-  border: 2px solid var(--color-weight-primary);
+  border: none;
   border-radius: var(--border-radius);
   color: var(--color-weight-primary);
   font-size: 16px;
@@ -92,7 +92,6 @@ const displayValue = computed(() => {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
   transition: all 0.2s ease;
 }
 

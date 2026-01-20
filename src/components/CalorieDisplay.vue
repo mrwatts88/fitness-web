@@ -46,18 +46,15 @@ function cycleDisplayMode() {
   <div class="calorie-display">
     <div class="display-content" @click="cycleDisplayMode">
       <div class="label">{{ displayLabel }}</div>
-      <div class="value">{{ displayValue.toLocaleString() }}</div>
     </div>
-    <button class="history-button" @click="appStore.openDrawer">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-      </svg>
-    </button>
+    <div :style="{display: 'flex', gap: '10px' }">
+      <div class="value">{{ displayValue.toLocaleString() }}</div>
+      <button class="history-button" @click="appStore.openDrawer">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.5v5l4 1M4.252 5v4H8M5.07 8a8 8 0 1 1-.818 6"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -69,7 +66,6 @@ function cycleDisplayMode() {
   align-items: center;
   justify-content: center;
   padding: var(--spacing-md);
-  gap: var(--spacing-md);
   min-height: 0;
 }
 
@@ -84,7 +80,7 @@ function cycleDisplayMode() {
   text-align: center;
   cursor: pointer;
   user-select: none;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   border-radius: var(--border-radius);
   transition: background 0.2s ease;
 }
@@ -110,9 +106,9 @@ function cycleDisplayMode() {
 }
 
 .history-button {
-  padding: 12px 24px;
+  padding: 12px 12px;
   background: var(--color-surface);
-  border: 2px solid var(--color-calorie-primary);
+  border: none;
   border-radius: var(--border-radius);
   color: var(--color-calorie-primary);
   font-size: 16px;
@@ -120,7 +116,6 @@ function cycleDisplayMode() {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
   transition: all 0.2s ease;
 }
 

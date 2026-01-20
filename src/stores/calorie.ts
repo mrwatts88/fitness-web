@@ -8,6 +8,7 @@ const CALORIE_DEFICIT = 250
 export const useCalorieStore = defineStore('calorie', () => {
   const entries = ref<CalorieEntry[]>([])
   const tdee = ref<number>(0)
+  const lossIn2Weeks = ref<number>(0);
   const loading = ref(false)
 
   const totalCalories = computed(() => {
@@ -38,6 +39,7 @@ export const useCalorieStore = defineStore('calorie', () => {
     try {
       const response = await tdeeApi.getTDEE()
       tdee.value = response.data.amount
+      lossIn2Weeks.value = response.data.lossIn2Weeks
     } catch (error) {
       console.error('Failed to fetch TDEE:', error)
     }
@@ -70,6 +72,7 @@ export const useCalorieStore = defineStore('calorie', () => {
   return {
     entries,
     tdee,
+    lossIn2Weeks,
     loading,
     totalCalories,
     calorieGoal,

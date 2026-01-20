@@ -8,6 +8,7 @@ const weightStore = useWeightStore()
 async function handleSubmit(amount: number) {
   await weightStore.addEntry(amount)
 }
+
 </script>
 
 <template>

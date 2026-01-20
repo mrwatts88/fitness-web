@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue';
 import { useAppStore } from '@/stores/app'
 import { useCalorieStore } from '@/stores/calorie'
 import { useWeightStore } from '@/stores/weight'
@@ -61,6 +61,7 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
 }
 
 #app {
@@ -71,10 +72,12 @@ body {
   background: var(--color-background);
 }
 
+
 .app-container {
   width: 100%;
   max-width: 428px;
   height: 100vh;
+  max-height: 844px;
   display: flex;
   flex-direction: column;
   background: var(--color-background);
