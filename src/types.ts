@@ -1,4 +1,4 @@
-export type Mode = 'calorie' | 'weight'
+export type Mode = 'calorie' | 'weight' | 'stats'
 
 export type DisplayMode = 'consumed' | 'remaining' | 'goal'
 

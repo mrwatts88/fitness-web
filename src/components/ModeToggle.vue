@@ -12,19 +12,17 @@ function handleModeChange(mode: Mode) {
 
 <template>
   <div class="mode-toggle">
-    <button
-      :class="['toggle-button', { active: appStore.mode === 'calorie' }]"
-      :style="{ '--active-color': 'var(--color-calorie-primary)' }"
-      @click="handleModeChange('calorie')"
-    >
+    <button :class="['toggle-button', { active: appStore.mode === 'calorie' }]"
+      :style="{ '--active-color': 'var(--color-calorie-primary)' }" @click="handleModeChange('calorie')">
       Calories
     </button>
-    <button
-      :class="['toggle-button', { active: appStore.mode === 'weight' }]"
-      :style="{ '--active-color': 'var(--color-weight-primary)' }"
-      @click="handleModeChange('weight')"
-    >
+    <button :class="['toggle-button', { active: appStore.mode === 'weight' }]"
+      :style="{ '--active-color': 'var(--color-weight-primary)' }" @click="handleModeChange('weight')">
       Weight
+    </button>
+    <button :class="['toggle-button', { active: appStore.mode === 'stats' }]"
+      :style="{ '--active-color': 'var(--color-calorie-primary)' }" @click="handleModeChange('stats')">
+      Stats
     </button>
   </div>
 </template>

@@ -71,10 +71,13 @@ onBeforeUnmount(() => {
 });
 
 function handleKeyDown(event: KeyboardEvent) {
+  console.log(event.key);
   if (event.key in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]) {
     handleNumberClick(Number.parseInt(event.key));
   } else if (event.key === "Backspace") {
     handleBackspace();
+  } else if (event.key == "Enter") {
+    handleSubmit();
   }
 }
 </script>

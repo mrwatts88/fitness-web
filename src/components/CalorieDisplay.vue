@@ -44,14 +44,13 @@ function cycleDisplayMode() {
 
 <template>
   <div class="calorie-display">
-    <div class="display-content" @click="cycleDisplayMode">
-      <div class="label">{{ displayLabel }}</div>
-    </div>
-    <div :style="{display: 'flex', gap: '10px' }">
-      <div class="value">{{ displayValue.toLocaleString() }}</div>
+    <div class="label">{{ displayLabel }}</div>
+    <div :style="{ display: 'flex', gap: '10px' }">
+      <div class="value" @click="cycleDisplayMode">{{ displayValue.toLocaleString() }}</div>
       <button class="history-button" @click="appStore.openDrawer">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.5v5l4 1M4.252 5v4H8M5.07 8a8 8 0 1 1-.818 6"/>
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 7.5v5l4 1M4.252 5v4H8M5.07 8a8 8 0 1 1-.818 6" />
         </svg>
       </button>
     </div>
@@ -103,6 +102,7 @@ function cycleDisplayMode() {
   font-weight: 700;
   color: var(--color-calorie-primary);
   line-height: 1;
+  cursor: pointer;
 }
 
 .history-button {
