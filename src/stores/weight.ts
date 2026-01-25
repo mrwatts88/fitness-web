@@ -8,7 +8,8 @@ export const useWeightStore = defineStore('weight', () => {
   const loading = ref(false)
 
   const todayWeight = computed(() => {
-    const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+    const now = new Date()
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     return entries.value.find((entry) => entry.createdAt === today) || null
   })
 
