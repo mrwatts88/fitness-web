@@ -17,3 +17,16 @@ export interface TDEEResponse {
   amount: number
   lossIn2Weeks: number
 }
+
+export interface QuickAddFood {
+  id: number
+  name: string
+  unit: string
+  amount: number
+  calories: number
+  fatGrams: number
+  carbsGrams: number
+  proteinGrams: number
+  sugarGrams: number
+  createdAt: string
+}

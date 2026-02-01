@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { CalorieEntry, WeightEntry, TDEEResponse } from '@/types'
+import type { CalorieEntry, WeightEntry, TDEEResponse, QuickAddFood } from '@/types'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
@@ -25,4 +25,13 @@ export const weightApi = {
 // TDEE API
 export const tdeeApi = {
   getTDEE: () => api.get<TDEEResponse>('/tdee')
+}
+
+// Quick Add API
+export const quickAddApi = {
+  getFoods: () => api.get<QuickAddFood[]>('/quickadd'),
+  createFood: (food: Omit<QuickAddFood, 'id' | 'createdAt'>) => api.post('/quickadd', food),
+  updateFood: (id: number, food: Omit<QuickAddFood, 'id' | 'createdAt'>) => api.put(`/quickadd/${id}`, food),
+  deleteFood: (id: number) => api.delete(`/quickadd/${id}`),
+  consumeFood: (id: number, multiplier: number) => api.post(`/quickadd/${id}/consume`, { multiplier })
 }

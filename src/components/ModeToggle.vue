@@ -5,8 +5,12 @@ import type { Mode } from '@/types'
 const appStore = useAppStore()
 
 function handleModeChange(mode: Mode) {
-  appStore.setMode(mode)
-  appStore.closeDrawer()
+  if (mode === 'calorie' && appStore.mode === 'calorie') {
+    appStore.toggleInputMode()
+  } else {
+    appStore.setMode(mode)
+    appStore.closeDrawer()
+  }
 }
 </script>
 

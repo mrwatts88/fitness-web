@@ -5,9 +5,12 @@ import type { Mode } from '@/types'
 
 interface Props {
   mode: Mode
+  submitting?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  submitting: false
+})
 const emit = defineEmits<{
   submit: [value: number]
 }>()
@@ -43,7 +46,7 @@ function handleBackspace() {
 }
 
 function handleSubmit() {
-  if (currentInput.value.length === 0) return
+  if (currentInput.value.length === 0 || props.submitting) return
 
   let value: number
   if (props.mode === 'weight') {
@@ -90,8 +93,14 @@ function handleKeyDown(event: KeyboardEvent) {
       </button>
       <button class="key-button key-clear" @click="handleBackspace">←</button>
       <button class="key-button" @click="handleNumberClick(0)">0</button>
-      <button class="key-button key-submit" :style="{ background: primaryColor }" @click="handleSubmit">
-        ✓
+      <button
+        class="key-button key-submit"
+        :style="{ background: primaryColor }"
+        :disabled="submitting"
+        @click="handleSubmit"
+      >
+        <span v-if="submitting" class="loading-spinner"></span>
+        <span v-else>✓</span>
       </button>
     </div>
   </div>
@@ -157,5 +166,30 @@ function handleKeyDown(event: KeyboardEvent) {
 
 .key-submit:active {
   opacity: 0.8;
+}
+
+.key-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.key-submit:disabled:active {
+  transform: none;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

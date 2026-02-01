@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useWeightStore } from '@/stores/weight'
 
 const weightStore = useWeightStore()
+const deletingDate = ref<string | null>(null)
 
 function formatDate(dateString: string) {
   // Format: YYYY-MM-DD → Mon, Jan 1
@@ -10,7 +12,9 @@ function formatDate(dateString: string) {
 }
 
 async function handleDelete(date: string) {
+  deletingDate.value = date
   await weightStore.deleteEntry(date)
+  deletingDate.value = null
 }
 </script>
 
@@ -23,8 +27,13 @@ async function handleDelete(date: string) {
           <div class="entry-date">{{ formatDate(entry.createdAt) }}</div>
           <div class="entry-amount">{{ entry.amount.toFixed(1) }} lbs</div>
         </div>
-        <button class="delete-button" @click="handleDelete(entry.createdAt)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <button
+          class="delete-button"
+          :disabled="deletingDate !== null"
+          @click="handleDelete(entry.createdAt)"
+        >
+          <span v-if="deletingDate === entry.createdAt" class="loading-spinner"></span>
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -54,6 +63,7 @@ async function handleDelete(date: string) {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  padding-right: 8px;
 }
 
 .entry-item {
@@ -99,5 +109,26 @@ async function handleDelete(date: string) {
 
 .delete-button:active {
   background: rgba(239, 68, 68, 0.1);
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-top-color: #ef4444;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
