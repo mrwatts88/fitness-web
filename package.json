@@ -14,7 +14,8 @@
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/",
-    "api": "json-server db.json --port 3000"
+    "api": "json-server db.json --port 3000",
+    "deploy": "npm run build && cd dist && sudo docker container kill fitness-web && sudo docker container rm fitness-web && sudo docker run -dit --name fitness-web -p 4173:80 -v \"$PWD\":/usr/local/apache2/htdocs/ httpd && cd .."
   },
   "dependencies": {
     "axios": "^1.13.2",
