@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useWeightStore } from '@/stores/weight'
-import { useCalorieStore } from '@/stores/calorie'
 import { useAppStore } from '@/stores/app'
 
 const weightStore = useWeightStore()
-const calorieStore = useCalorieStore()
 const appStore = useAppStore()
 
 const displayValue = computed(() => {
@@ -29,9 +27,6 @@ const displayValue = computed(() => {
         </svg>
       </button>
     </div>
-    <div :style="{height: '40px'}" />
-    <div class="label">Loss in 2 weeks</div>
-    <div class="value">{{ calorieStore.lossIn2Weeks?.toFixed(1)}}</div>
   </div>
 </template>
 
