@@ -16,6 +16,7 @@ export interface WeightEntry {
 export interface TDEEResponse {
   amount: number
   lossIn2Weeks: number
+  eatenPerDay: number
 }
 
 export interface QuickAddFood {

@@ -1,5 +1,10 @@
 import axios from 'axios'
-import type { CalorieEntry, WeightEntry, TDEEResponse, QuickAddFood } from '@/types'
+import type {
+  CalorieEntry,
+  QuickAddFood,
+  TDEEResponse,
+  WeightEntry
+} from '@/types'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',

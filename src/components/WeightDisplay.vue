@@ -31,7 +31,7 @@ const displayValue = computed(() => {
     </div>
     <div :style="{height: '40px'}" />
     <div class="label">Loss in 2 weeks</div>
-    <div class="value">{{ calorieStore.lossIn2Weeks.toFixed(1)}}</div>
+    <div class="value">{{ calorieStore.lossIn2Weeks?.toFixed(1)}}</div>
   </div>
 </template>
 
