@@ -11,6 +11,7 @@ export const useCalorieStore = defineStore('calorie', () => {
   const lossIn2Weeks = ref<number>(0)
   const eatenPerDay = ref<number | null>(null)
   const loading = ref(false)
+  const submittingEntry = ref(false)
 
   const totalCalories = computed(() => {
     return entries.value.reduce((sum, entry) => sum + entry.amount, 0)
@@ -92,13 +93,13 @@ export const useCalorieStore = defineStore('calorie', () => {
 
   async function addEntry(amount: number) {
     try {
-      loading.value = true
+      submittingEntry.value = true
       await calorieApi.addEntry(amount)
       await refreshData({ setLoading: false })
     } catch (error) {
       console.error('Failed to add calorie entry:', error)
     } finally {
-      loading.value = false
+      submittingEntry.value = false
     }
   }
 
@@ -120,6 +121,7 @@ export const useCalorieStore = defineStore('calorie', () => {
     lossIn2Weeks,
     eatenPerDay,
     loading,
+    submittingEntry,
     totalCalories,
     calorieGoal,
     remainingCalories,

@@ -14,7 +14,7 @@ async function handleSubmit(amount: number) {
 <template>
   <div class="weight-mode">
     <WeightDisplay />
-    <Keyboard mode="weight" :submitting="weightStore.loading" @submit="handleSubmit" />
+    <Keyboard mode="weight" :submitting="weightStore.submittingEntry" @submit="handleSubmit" />
   </div>
 </template>
 

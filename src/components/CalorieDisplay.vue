@@ -45,8 +45,23 @@ function cycleDisplayMode() {
 <template>
   <div class="calorie-display">
     <div class="label">{{ displayLabel }}</div>
-    <div :style="{ display: 'flex', gap: '10px' }">
-      <div class="value" @click="cycleDisplayMode">{{ displayValue.toLocaleString() }}</div>
+    <div class="value-row">
+      <div
+        v-if="calorieStore.loading && !calorieStore.submittingEntry"
+        class="loading-indicator"
+        role="status"
+        aria-label="Loading calories"
+      >
+        <span class="loading-spinner"></span>
+      </div>
+      <div
+        v-else
+        class="value"
+        :class="{ 'value-submitting': calorieStore.submittingEntry }"
+        @click="cycleDisplayMode"
+      >
+        {{ displayValue.toLocaleString() }}
+      </div>
       <button class="history-button" @click="appStore.openDrawer">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,12 +112,40 @@ function cycleDisplayMode() {
   font-weight: 600;
 }
 
+.value-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .value {
   font-size: 56px;
   font-weight: 700;
   color: var(--color-calorie-primary);
   line-height: 1;
   cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.value-submitting {
+  opacity: 0.45;
+}
+
+.loading-indicator {
+  min-height: 56px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(16, 185, 129, 0.25);
+  border-top-color: var(--color-calorie-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 .history-button {
@@ -122,5 +165,11 @@ function cycleDisplayMode() {
 .history-button:active {
   transform: scale(0.98);
   background: rgba(16, 185, 129, 0.1);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

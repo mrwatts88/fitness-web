@@ -21,7 +21,7 @@ async function handleSubmit(amount: number) {
       <Keyboard
         v-if="appStore.inputMode === 'keyboard'"
         mode="calorie"
-        :submitting="calorieStore.loading"
+        :submitting="calorieStore.submittingEntry"
         @submit="handleSubmit"
       />
       <template v-else>

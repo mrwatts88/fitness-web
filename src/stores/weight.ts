@@ -7,6 +7,7 @@ import { weightApi } from '@/services/api'
 export const useWeightStore = defineStore('weight', () => {
   const entries = ref<WeightEntry[]>([])
   const loading = ref(false)
+  const submittingEntry = ref(false)
 
   const todayWeight = computed(() => {
     const now = new Date()
@@ -46,13 +47,13 @@ export const useWeightStore = defineStore('weight', () => {
 
   async function addEntry(amount: number) {
     try {
-      loading.value = true
+      submittingEntry.value = true
       await weightApi.addEntry(amount)
       await refreshDataAfterMutation()
     } catch (error) {
       console.error('Failed to add weight entry:', error)
     } finally {
-      loading.value = false
+      submittingEntry.value = false
     }
   }
 
@@ -71,6 +72,7 @@ export const useWeightStore = defineStore('weight', () => {
   return {
     entries,
     loading,
+    submittingEntry,
     todayWeight,
     fetchEntries,
     addEntry,
