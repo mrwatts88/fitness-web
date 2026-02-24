@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { useQuickAddStore } from '@/stores/quickadd'
-import { useCalorieStore } from '@/stores/calorie'
 
 const quickAddStore = useQuickAddStore()
-const calorieStore = useCalorieStore()
 
 async function handleSubmit() {
   await quickAddStore.submitTaps()
-  await calorieStore.fetchEntries()
 }
 </script>
 

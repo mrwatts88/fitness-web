@@ -1,9 +1,11 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { QuickAddFood } from '@/types'
+import { useCalorieStore } from '@/stores/calorie'
 import { quickAddApi } from '@/services/api'
 
 export const useQuickAddStore = defineStore('quickadd', () => {
+  const calorieStore = useCalorieStore()
   const foods = ref<QuickAddFood[]>([])
   const pendingTaps = ref<Map<number, number>>(new Map())
   const loading = ref(false)
@@ -90,15 +92,23 @@ export const useQuickAddStore = defineStore('quickadd', () => {
   }
 
   async function submitTaps() {
+    if (pendingTaps.value.size === 0) return
+
+    let shouldRefreshCalorieData = false
+
     try {
       submitting.value = true
       for (const [foodId, count] of pendingTaps.value) {
+        shouldRefreshCalorieData = true
         await quickAddApi.consumeFood(foodId, count)
       }
       clearTaps()
     } catch (error) {
       console.error('Failed to submit quick add entries:', error)
     } finally {
+      if (shouldRefreshCalorieData) {
+        await calorieStore.refreshData()
+      }
       submitting.value = false
     }
   }

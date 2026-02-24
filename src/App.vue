@@ -17,10 +17,11 @@ const weightStore = useWeightStore()
 const quickAddStore = useQuickAddStore()
 
 onMounted(async () => {
-  await calorieStore.fetchTDEE()
-  await calorieStore.fetchEntries()
-  await weightStore.fetchEntries()
-  await quickAddStore.fetchFoods()
+  await Promise.all([
+    calorieStore.refreshData(),
+    weightStore.fetchEntries(),
+    quickAddStore.fetchFoods()
+  ])
 
   if (!weightStore.todayWeight) {
     appStore.setMode("weight");

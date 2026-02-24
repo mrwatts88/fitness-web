@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { CalorieEntry } from '@/types'
+import type { CalorieEntry, TDEEResponse } from '@/types'
 import { calorieApi, tdeeApi } from '@/services/api'
 
 const CALORIE_DEFICIT = 250
@@ -24,6 +24,18 @@ export const useCalorieStore = defineStore('calorie', () => {
     return calorieGoal.value - totalCalories.value
   })
 
+  function applyTdeeData(data: TDEEResponse) {
+    tdee.value = typeof data.amount === 'number' && Number.isFinite(data.amount) ? data.amount : 0
+    lossIn2Weeks.value =
+      typeof data.lossIn2Weeks === 'number' && Number.isFinite(data.lossIn2Weeks)
+        ? data.lossIn2Weeks
+        : 0
+    eatenPerDay.value =
+      typeof data.eatenPerDay === 'number' && Number.isFinite(data.eatenPerDay)
+        ? data.eatenPerDay
+        : null
+  }
+
   async function fetchEntries() {
     try {
       loading.value = true
@@ -39,20 +51,42 @@ export const useCalorieStore = defineStore('calorie', () => {
   async function fetchTDEE() {
     try {
       const response = await tdeeApi.getTDEE()
-      tdee.value =
-        typeof response.data.amount === 'number' && Number.isFinite(response.data.amount)
-          ? response.data.amount
-          : 0
-      lossIn2Weeks.value =
-        typeof response.data.lossIn2Weeks === 'number' && Number.isFinite(response.data.lossIn2Weeks)
-          ? response.data.lossIn2Weeks
-          : 0
-      eatenPerDay.value =
-        typeof response.data.eatenPerDay === 'number' && Number.isFinite(response.data.eatenPerDay)
-          ? response.data.eatenPerDay
-          : null
+      applyTdeeData(response.data)
     } catch (error) {
       console.error('Failed to fetch TDEE:', error)
+    }
+  }
+
+  async function refreshData(options: { setLoading?: boolean } = {}) {
+    const { setLoading = true } = options
+
+    try {
+      if (setLoading) {
+        loading.value = true
+      }
+
+      const [entriesResult, tdeeResult] = await Promise.allSettled([
+        calorieApi.getEntries(),
+        tdeeApi.getTDEE()
+      ])
+
+      if (entriesResult.status === 'fulfilled') {
+        entries.value = entriesResult.value.data
+      } else {
+        console.error('Failed to refresh calorie entries:', entriesResult.reason)
+      }
+
+      if (tdeeResult.status === 'fulfilled') {
+        applyTdeeData(tdeeResult.value.data)
+      } else {
+        console.error('Failed to refresh TDEE data:', tdeeResult.reason)
+      }
+    } catch (error) {
+      console.error('Failed to refresh calorie data:', error)
+    } finally {
+      if (setLoading) {
+        loading.value = false
+      }
     }
   }
 
@@ -60,7 +94,7 @@ export const useCalorieStore = defineStore('calorie', () => {
     try {
       loading.value = true
       await calorieApi.addEntry(amount)
-      await fetchEntries()
+      await refreshData({ setLoading: false })
     } catch (error) {
       console.error('Failed to add calorie entry:', error)
     } finally {
@@ -72,7 +106,7 @@ export const useCalorieStore = defineStore('calorie', () => {
     try {
       loading.value = true
       await calorieApi.deleteEntry(id)
-      await fetchEntries()
+      await refreshData({ setLoading: false })
     } catch (error) {
       console.error('Failed to delete calorie entry:', error)
     } finally {
@@ -91,6 +125,7 @@ export const useCalorieStore = defineStore('calorie', () => {
     remainingCalories,
     fetchEntries,
     fetchTDEE,
+    refreshData,
     addEntry,
     deleteEntry
   }

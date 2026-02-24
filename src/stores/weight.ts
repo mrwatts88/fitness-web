@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { WeightEntry } from '@/types'
+import { useCalorieStore } from '@/stores/calorie'
 import { weightApi } from '@/services/api'
 
 export const useWeightStore = defineStore('weight', () => {
@@ -25,11 +26,29 @@ export const useWeightStore = defineStore('weight', () => {
     }
   }
 
+  async function refreshDataAfterMutation() {
+    const calorieStore = useCalorieStore()
+    const [weightResult, tdeeResult] = await Promise.allSettled([
+      weightApi.getEntries(),
+      calorieStore.fetchTDEE()
+    ])
+
+    if (weightResult.status === 'rejected') {
+      throw weightResult.reason
+    }
+
+    entries.value = weightResult.value.data
+
+    if (tdeeResult.status === 'rejected') {
+      console.error('Failed to refresh TDEE after weight mutation:', tdeeResult.reason)
+    }
+  }
+
   async function addEntry(amount: number) {
     try {
       loading.value = true
       await weightApi.addEntry(amount)
-      await fetchEntries()
+      await refreshDataAfterMutation()
     } catch (error) {
       console.error('Failed to add weight entry:', error)
     } finally {
@@ -41,7 +60,7 @@ export const useWeightStore = defineStore('weight', () => {
     try {
       loading.value = true
       await weightApi.deleteEntry(date)
-      await fetchEntries()
+      await refreshDataAfterMutation()
     } catch (error) {
       console.error('Failed to delete weight entry:', error)
     } finally {
